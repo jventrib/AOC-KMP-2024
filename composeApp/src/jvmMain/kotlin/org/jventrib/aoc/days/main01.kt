@@ -1,4 +1,4 @@
-package org.jventrib.aoc
+package org.jventrib.aoc.days
 
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -8,6 +8,6 @@ fun main() = application {
         onCloseRequest = ::exitApplication,
         title = "AOC-KMP-compose",
     ) {
-        Day01()
+        Day01().render()
     }
 }
