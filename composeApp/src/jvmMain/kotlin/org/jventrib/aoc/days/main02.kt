@@ -8,6 +8,6 @@ fun main() = application {
         onCloseRequest = ::exitApplication,
         title = "AOC-KMP-compose",
     ) {
-        Day01().render()
+        Day01().DrawDayPart()
     }
 }
