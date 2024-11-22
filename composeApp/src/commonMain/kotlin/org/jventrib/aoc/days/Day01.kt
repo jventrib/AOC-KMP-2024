@@ -2,8 +2,6 @@ package org.jventrib.aoc.days
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -26,11 +24,13 @@ val day01 = day<Int>(1) {
             Text("count is ${state}")
         }
 
-        (1..800).forEach {
-            delay(10)
-            mutableCount.value = it
+        exec {
+            (1..800).forEach {
+                delay(10)
+                mutableCount.value = it
+            }
+            mutableCount.value
         }
-        mutableCount.value
     }
 }
 

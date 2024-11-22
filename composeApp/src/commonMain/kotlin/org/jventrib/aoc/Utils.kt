@@ -1,11 +1,13 @@
 package org.jventrib.aoc
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlin.time.measureTime
 
 /**
  * Reads lines from the given input txt file.
@@ -35,13 +37,29 @@ suspend fun <E> executeDayPart(
 
     d.input = readInput(d.dayNumber, if (example) "input_example.txt" else "input.txt")
     println("input: ${lineSeparator()}${d.input.joinToString(lineSeparator())}")
-    val start = getMillis()
-    d.block(d)
-    val output = d.part().getOutput()
-    val elapsed = getMillis() - start
-    println("output: $output")
-    println("time: ${elapsed}ms")
+    val output: E
+    val elapsed = measureTime {
+        d.block(d)
+        output = d.part().getOutput()
+        println("output: $output")
+    }
+    println("time: ${elapsed.inWholeMilliseconds}ms")
     return output
+}
+
+@Composable
+fun <E> renderDayPart(
+    d: Day<E>,
+    part: Day<E>.() -> Part<E>,
+    example: Boolean,
+    label: String
+) {
+    println("Day ${d.dayNumber} - $label")
+
+    d.input = readInput(d.dayNumber, if (example) "input_example.txt" else "input.txt")
+    println("input: ${lineSeparator()}${d.input.joinToString(lineSeparator())}")
+    d.block(d)
+    val output = d.part().render()
 }
 
 
@@ -58,13 +76,13 @@ class Day<E>(val dayNumber: Int, val block: Day<E>.() -> Unit) {
     lateinit var part2: Part<E>
     lateinit var part2Example: Part<E>
 
-    fun part1(expectedExampleOutput: E, expectedOutput: E? = null, block: suspend PartBlock.() -> E): Part<E> {
+    fun part1(expectedExampleOutput: E, expectedOutput: E? = null, block: PartBlock<E>.() -> Unit): Part<E> {
         part1 = Part(expectedOutput, block)
         part1Example = Part(expectedExampleOutput, block)
         return part1
     }
 
-    fun part2(expectedExampleOutput: E, expectedOutput: E? = null, block: PartBlock.() -> E): Part<E> {
+    fun part2(expectedExampleOutput: E, expectedOutput: E? = null, block: PartBlock<E>.() -> Unit): Part<E> {
         part2 = Part(expectedOutput, block)
         part2Example = Part(expectedExampleOutput, block)
         return part2
@@ -74,22 +92,39 @@ class Day<E>(val dayNumber: Int, val block: Day<E>.() -> Unit) {
 
 class Part<E>(
     val expected: E?,
-    private val block: suspend PartBlock.() -> E,
-    private val partBlock: PartBlock = PartBlock()
+    private val block: PartBlock<E>.() -> Unit,
 ) {
+    private val partBlock = PartBlock<E>()
     suspend fun getOutput(): E {
-        return block(partBlock)
+        block(partBlock)
+        return partBlock.execBlock()
+
     }
 
     @Composable
     fun render() {
-        partBlock.render()
+        block(partBlock)
+        partBlock.renderBlock()
+        LaunchedEffect(Unit) {
+            partBlock.execBlock()
+        }
     }
 
 }
 
-class PartBlock {
-    lateinit var render: () -> Unit
+class PartBlock<E> {
+    lateinit var renderBlock: @Composable () -> Unit
+    lateinit var execBlock: suspend () -> E
+
+    fun render(block: @Composable () -> Unit) {
+        renderBlock = block
+    }
+
+    fun exec(block: suspend () -> E) {
+        execBlock = block
+    }
+
+
 }
 
 data class Point(var x: Int, var y: Int, var value: Int = 0) {
