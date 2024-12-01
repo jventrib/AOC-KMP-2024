@@ -2,7 +2,6 @@ package org.jventrib.aoc
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import kotlin.time.measureTime
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapMerge
@@ -11,7 +10,7 @@ import kotlinx.coroutines.flow.flowOn
 
 /** Reads lines from the given input txt file. */
 fun readInput(day: Int, name: String = "input.txt") =
-    readAllText("src/commonMain/resources/d${day.toString().padStart(2, '0')}/$name")
+    readAllText("../input/${day.toString().padStart(2, '0')}/$name")
 
 expect fun readAllText(filePath: String): List<String>
 
@@ -24,40 +23,17 @@ fun String.replaceLast(oldValue: String, newValue: String, ignoreCase: Boolean =
   return if (index < 0) this else this.replaceRange(index, index + oldValue.length, newValue)
 }
 
-suspend fun <E> executeDayPart(
-    d: Day<E>,
-    part: Day<E>.() -> Part<E>,
-    example: Boolean,
-    label: String
-): E {
-  println("Day ${d.dayNumber} - $label")
-
-  d.input = readInput(d.dayNumber, if (example) "input_example.txt" else "input.txt")
-  println("input: ${lineSeparator()}${d.input.joinToString(lineSeparator())}")
-  val output: E
-  val elapsed = measureTime {
-    d.block(d)
-    output = d.part().getOutput()
-    println("output: $output")
-  }
-  println("time: ${elapsed.inWholeMilliseconds}ms")
-  return output
-}
-
 @Composable
-fun <E> renderDayPart(d: Day<E>, part: Day<E>.() -> Part<E>, example: Boolean, label: String) {
+fun <E> renderDayPart(d: Day<E>, part: Int, example: Boolean, label: String) {
   println("Day ${d.dayNumber} - $label")
 
   d.input = readInput(d.dayNumber, if (example) "input_example.txt" else "input.txt")
   println("input: ${lineSeparator()}${d.input.joinToString(lineSeparator())}")
   d.block(d)
-  val output = d.part().render()
+  val output = d.getPart(part, example).render()
 }
 
-fun <E> day(dayNumber: Int, block: Day<E>.() -> Unit): Day<E> {
-  val day = Day<E>(dayNumber, block)
-  return day
-}
+fun <E> day(dayNumber: Int, block: Day<E>.() -> Unit): Day<E> = Day(dayNumber, block)
 
 class Day<E>(val dayNumber: Int, val block: Day<E>.() -> Unit) {
   lateinit var input: List<String>
@@ -85,6 +61,15 @@ class Day<E>(val dayNumber: Int, val block: Day<E>.() -> Unit) {
     part2Example = Part(expectedExampleOutput, block)
     return part2
   }
+
+  fun getPart(part: Int, example: Boolean): Part<E> =
+      when {
+        part == 1 && example -> part1Example
+        part == 1 && !example -> part1
+        part == 2 && example -> part2Example
+        part == 2 && !example -> part2
+        else -> throw Exception("Invalid day / part")
+      }
 }
 
 class Part<E>(

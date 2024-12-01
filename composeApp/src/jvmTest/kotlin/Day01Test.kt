@@ -1,17 +1,17 @@
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec
-import io.kotest.matchers.shouldBe
+import org.jventrib.aoc.Day
 import org.jventrib.aoc.days.day01
-import org.jventrib.aoc.executeDayPart
 
 class Day01Test :
     FunSpec({
       coroutineTestScope = true
-      fun dayPartTest(day: Int, part: Int) = funSpec {
-        test("day $day part $part") {
-          val result = executeDayPart(day01, { part1 }, true, "example")
-          result shouldBe day01.part1.expected
+      fun <E> dayPartTest(day: Day<E>, part: Int) = funSpec {
+        context("part1") {
+          test("day $day part $part example") { executeAndAssert(day, part, true) }
+          test("day $day part $part") { executeAndAssert(day, part, false) }
         }
       }
-      include(dayPartTest(1, 1))
+      include(dayPartTest(day01, 1))
+      include(dayPartTest(day01, 2))
     })
