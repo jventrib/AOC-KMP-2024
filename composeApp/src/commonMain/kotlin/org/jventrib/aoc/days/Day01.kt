@@ -13,7 +13,7 @@ import org.jventrib.aoc.day
 
 val day01 =
     day<Int>(1) {
-      part1(800, 800) {
+      part1(11, 800) {
         var mutableCount = mutableIntStateOf(0)
         render {
           val state by remember { mutableCount }
