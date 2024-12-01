@@ -7,9 +7,9 @@ class Day01Test :
     FunSpec({
       coroutineTestScope = true
       fun <E> dayPartTest(day: Day<E>, part: Int) = funSpec {
-        context("part1") {
-          test("day $day part $part example") { executeAndAssert(day, part, true) }
-          test("day $day part $part") { executeAndAssert(day, part, false) }
+        context("Day ${day.dayNumber} Part $part") {
+          test("day ${day.dayNumber} part $part example") { executeAndAssert(day, part, true) }
+          test("day ${day.dayNumber} part $part") { executeAndAssert(day, part, false) }
         }
       }
       include(dayPartTest(day01, 1))
