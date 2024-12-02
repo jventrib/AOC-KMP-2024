@@ -31,6 +31,8 @@ fun <E> renderDayPart(d: Day<E>, part: Int, example: Boolean, label: String) {
   println("input: ${lineSeparator()}${d.input.joinToString(lineSeparator())}")
   d.block(d)
   val output = d.getPart(part, example).render()
+
+  println("output: $output")
 }
 
 fun <E> day(dayNumber: Int, block: Day<E>.() -> Unit): Day<E> = Day(dayNumber, block)
