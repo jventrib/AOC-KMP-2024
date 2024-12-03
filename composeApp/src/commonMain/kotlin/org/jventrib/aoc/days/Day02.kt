@@ -52,7 +52,9 @@ val day02 =
                               buildAnnotatedString {
                                 pushStyle(
                                     SpanStyle(
-                                        background = if (report.valid) Color.Green else Color.Red))
+                                        background = if (report.valid) Color.Green else Color.Red,
+                                    ),
+                                )
                                 append(report.value)
                                 if (report.removedIndex != null) {
                                   val i =
@@ -64,11 +66,13 @@ val day02 =
                                   addStyle(
                                       SpanStyle(background = Color.Yellow),
                                       i,
-                                      (i + 2).coerceAtMost(report.value.length))
+                                      (i + 2).coerceAtMost(report.value.length),
+                                  )
                                   toAnnotatedString()
                                 }
                               },
-                              fontSize = 15.sp)
+                              fontSize = 15.sp,
+                          )
                         }
                   }
                 }
@@ -76,24 +80,27 @@ val day02 =
             }
             VerticalScrollbar(
                 modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
-                adapter = rememberScrollbarAdapter(stateVertical))
+                adapter = rememberScrollbarAdapter(stateVertical),
+            )
             Text(
-                "Count ${inputState.count{it.valid}}",
-                modifier = Modifier.align(Alignment.TopEnd).padding(end = 15.dp))
+                "Count ${inputState.count { it.valid }}",
+                modifier = Modifier.align(Alignment.TopEnd).padding(end = 15.dp),
+            )
           }
         }
         exec {
           inputState.forEachIndexed { ri, e ->
             delay(1)
             val levels = e.value.split(" ").map { it.toInt() }
-            var removedIndex: Int? = null
             val check =
                 levels.indices.any { i ->
+                  inputState[ri] = e.copy(removedIndex = i)
+                  delay(10)
                   val removed = levels.filterIndexed { index, _ -> index != i }
-                  removedIndex = i
                   check(removed)
                 }
-            if (check) inputState.set(ri, e.copy(valid = true, removedIndex = removedIndex))
+            if (check) inputState[ri] = inputState[ri].copy(valid = true)
+            else inputState[ri] = inputState[ri].copy(removedIndex = null)
           }
           inputState.count { it.valid }
         }
@@ -101,9 +108,8 @@ val day02 =
     }
 
 private fun check(levels: List<Int>): Boolean {
-  val check1 = levels == levels.sorted() || levels == levels.sortedDescending()
-  val check2 = levels.zipWithNext().all { (1..3).contains((it.first - it.second).absoluteValue) }
-  return check1 && check2
+  val list = levels.zipWithNext().map { (it.first - it.second).absoluteValue }
+  return list.all { (1..3).contains(it) } && (list.all { it > 0 } || list.all { it < 0 })
 }
 
 data class Report(val value: String, val valid: Boolean, val removedIndex: Int? = null)
