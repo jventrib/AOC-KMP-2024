@@ -46,34 +46,33 @@ val day02 =
                 val cols = 8
                 inputState.chunked(inputState.size / cols).forEach {
                   Column {
-                    it
-                        .forEach { report ->
-                          Text(
-                              buildAnnotatedString {
-                                pushStyle(
-                                    SpanStyle(
-                                        background = if (report.valid) Color.Green else Color.Red,
-                                    ),
-                                )
-                                append(report.value)
-                                if (report.removedIndex != null) {
-                                  val i =
-                                      report.value
-                                          .split(" ")
-                                          .map { it.length + 1 }
-                                          .take(report.removedIndex)
-                                          .sum()
-                                  addStyle(
-                                      SpanStyle(background = Color.Yellow),
-                                      i,
-                                      (i + 2).coerceAtMost(report.value.length),
-                                  )
-                                  toAnnotatedString()
-                                }
-                              },
-                              fontSize = 15.sp,
-                          )
-                        }
+                    it.forEach { report ->
+                      Text(
+                          buildAnnotatedString {
+                            pushStyle(
+                                SpanStyle(
+                                    background = if (report.valid) Color.Green else Color.Red,
+                                ),
+                            )
+                            append(report.value)
+                            if (report.removedIndex != null) {
+                              val i =
+                                  report.value
+                                      .split(" ")
+                                      .map { it.length + 1 }
+                                      .take(report.removedIndex)
+                                      .sum()
+                              addStyle(
+                                  SpanStyle(background = Color.Yellow),
+                                  i,
+                                  (i + 2).coerceAtMost(report.value.length),
+                              )
+                              toAnnotatedString()
+                            }
+                          },
+                          fontSize = 15.sp,
+                      )
+                    }
                   }
                 }
               }
