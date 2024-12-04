@@ -46,7 +46,7 @@ class Day<E>(val dayNumber: Int, val block: Day<E>.() -> Unit) {
   lateinit var part1Example: Part<E>
   lateinit var part2: Part<E>
   lateinit var part2Example: Part<E>
-  lateinit var scope : CoroutineScope
+  lateinit var scope: CoroutineScope
 
   fun part1(
       expectedExampleOutput: E,
@@ -79,11 +79,12 @@ class Day<E>(val dayNumber: Int, val block: Day<E>.() -> Unit) {
 }
 
 class Part<E>(
-  var scope: CoroutineScope,
+    var scope: CoroutineScope,
     val expected: E?,
     private val block: PartBlock<E>.() -> Unit,
 ) {
   private val partBlock = PartBlock<E>()
+
   suspend fun getOutput(): E {
     block(partBlock)
     return partBlock.execBlock()

@@ -38,22 +38,18 @@ val day03 =
       val exclusions = mutableStateListOf<MatchResult>()
       part1(161, 170778545) {
         render { render(result, matches) }
-        exec {
-          findMatches(result, matches, exclusions)
-        }
+        exec { findMatches(result, matches, exclusions) }
       }
       part2(48, 82868252) {
         render { render(result, matches, exclusions) }
-        exec {
-          findMatchesWithExclusions(result, matches, exclusions)
-        }
+        exec { findMatchesWithExclusions(result, matches, exclusions) }
       }
     }
 
 private suspend fun Day<Long>.findMatchesWithExclusions(
-  result: MutableLongState,
-  matches: SnapshotStateList<IntRange>,
-  exclusions: SnapshotStateList<MatchResult>
+    result: MutableLongState,
+    matches: SnapshotStateList<IntRange>,
+    exclusions: SnapshotStateList<MatchResult>
 ): Long {
   """don't\(\).*?do\(\)"""
       .toRegex()
@@ -66,9 +62,9 @@ private suspend fun Day<Long>.findMatchesWithExclusions(
 }
 
 private suspend fun Day<Long>.findMatches(
-  result: MutableLongState,
-  matches: SnapshotStateList<IntRange>,
-  exclusions: SnapshotStateList<MatchResult>
+    result: MutableLongState,
+    matches: SnapshotStateList<IntRange>,
+    exclusions: SnapshotStateList<MatchResult>
 ): Long {
   """mul\((\d+),(\d+)\)"""
       .toRegex()
@@ -81,14 +77,14 @@ private suspend fun Day<Long>.findMatches(
         match.range
       }
       .toCollection(matches)
-      return result.value
+  return result.value
 }
 
 @Composable
 private fun Day<Long>.render(
-  result: MutableLongState,
-  matches: SnapshotStateList<IntRange>,
-  exclusions: SnapshotStateList<MatchResult>? = null
+    result: MutableLongState,
+    matches: SnapshotStateList<IntRange>,
+    exclusions: SnapshotStateList<MatchResult>? = null
 ) {
   Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
     Button(
@@ -97,9 +93,7 @@ private fun Day<Long>.render(
           result.value = 0
           matches.clear()
           exclusions?.clear()
-          scope.launch {
-            findMatchesWithExclusions(result, matches, exclusions!!)
-          }
+          scope.launch { findMatchesWithExclusions(result, matches, exclusions!!) }
         },
     ) {
       Text("Refresh")
