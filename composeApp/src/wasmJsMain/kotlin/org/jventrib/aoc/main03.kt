@@ -6,8 +6,5 @@ import org.jventrib.aoc.days.day03
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
-  CanvasBasedWindow(canvasElementId = "ComposeTarget") {
-    renderDayPart(day03, 2, false, "example")
-  }
+  CanvasBasedWindow(canvasElementId = "ComposeTarget") { renderDayPart(day03, 2, false, "example") }
 }
-

@@ -31,9 +31,9 @@ import kotlinx.coroutines.launch
 import org.jventrib.aoc.Day
 import org.jventrib.aoc.day
 
+private val result = mutableLongStateOf(0)
 val day03 =
     day(3) {
-      val result = mutableLongStateOf(0)
       val matches = mutableStateListOf<IntRange>()
       val exclusions = mutableStateListOf<MatchResult>()
       part1(161, 170778545) {
@@ -89,11 +89,11 @@ private fun Day<Long>.render(
   Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
     Button(
         onClick = {
-          scope.coroutineContext.cancelChildren()
+          scope?.coroutineContext?.cancelChildren()
           result.value = 0
           matches.clear()
           exclusions?.clear()
-          scope.launch { findMatchesWithExclusions(result, matches, exclusions!!) }
+          scope?.launch { findMatchesWithExclusions(result, matches, exclusions!!) }
         },
     ) {
       Text("Refresh")
