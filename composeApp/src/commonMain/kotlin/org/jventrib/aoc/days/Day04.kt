@@ -68,7 +68,7 @@ private fun PartBlock<Int>.doRender(inputState: CharStateList) {
       inputState.forEach { row ->
         Row {
           row.forEach { col ->
-            val size = 9
+            val size = 15
             Box(
                 Modifier.size(size.dp).background(col.state.value),
             ) {
@@ -132,21 +132,21 @@ private fun getOffset(): List<Offset> {
   val dys = listOf(-1, 0, 1)
   val offsets =
       dxs.flatMap { dx ->
-            dys.map { dy ->
-              if (dx != 0 || dy != 0) {
-                Offset(dx, dy)
-              } else null
-            }
-          }
+        dys.map { dy ->
+          if (dx != 0 || dy != 0) {
+            Offset(dx, dy)
+          } else null
+        }
+      }
           .filterNotNull()
   return offsets
 }
 
 data class CharState(
-    val x: Int,
-    val y: Int,
-    val char: Char,
-    var state: MutableState<Color> = mutableStateOf(Color.LightGray)
+  val x: Int,
+  val y: Int,
+  val char: Char,
+  var state: MutableState<Color> = mutableStateOf(Color.LightGray)
 )
 
 data class Offset(val x: Int, val y: Int)

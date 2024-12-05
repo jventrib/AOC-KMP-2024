@@ -1,6 +1,7 @@
 package org.jventrib.aoc
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,17 +22,15 @@ import androidx.compose.ui.unit.dp
 fun <E> PartBlock<E>.AOCPartWindows(result: MutableState<E>, block: @Composable () -> Unit) {
   Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
     Button(
-        onClick = {
-
-        },
+        onClick = {},
     ) {
       Text("Refresh")
     }
 
     Box(Modifier) {
       Box(Modifier.padding(20.dp)) {
-        val stateVertical = rememberScrollState()
-        Box(Modifier.fillMaxSize().verticalScroll(stateVertical).border(1.dp, Color.Gray)) {
+        val scrollState = rememberScrollState()
+        Box(Modifier.fillMaxSize().verticalScroll(scrollState).horizontalScroll(scrollState).border(1.dp, Color.Gray)) {
           block()
         }
       }
