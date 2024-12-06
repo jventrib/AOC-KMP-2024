@@ -17,6 +17,6 @@ fun main() = application {
       title = "AOC-KMP-compose",
       state = state,
   ) {
-    renderDayPart(day05, 1, true, "example")
+    renderDayPart(day06, 1, true, "example")
   }
 }

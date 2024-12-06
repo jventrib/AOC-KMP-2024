@@ -13,13 +13,14 @@ import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun <E> PartBlock<E>.AOCPartWindows(result: MutableState<E>, block: @Composable () -> Unit) {
+fun <E> PartBlock<E>.AOCPartWindows(result: State<E>, block: @Composable () -> Unit) {
   Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
     Button(
         onClick = {},
