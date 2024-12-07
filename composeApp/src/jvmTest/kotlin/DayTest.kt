@@ -1,8 +1,6 @@
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec
 import org.jventrib.aoc.Day
-import org.jventrib.aoc.days.day05
-import org.jventrib.aoc.days.day06
 import org.jventrib.aoc.days.day07
 
 class DayTest :

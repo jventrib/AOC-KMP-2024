@@ -107,6 +107,10 @@ tasks.named<Test>("jvmTest") {
   }
 }
 
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+  compilerOptions.freeCompilerArgs.add("-Xdebug")
+}
+
 //tasks.build {
 //  dependsOn("ktfmtFormat")
 //}
