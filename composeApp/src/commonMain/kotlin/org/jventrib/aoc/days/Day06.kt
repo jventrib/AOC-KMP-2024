@@ -46,18 +46,16 @@ val day06 = day(6) {
   val guardX = input[guardY].indexOfFirst { it == '^' }
   val guard = Guard(guardX, guardY)
 
-
+  val visited = mutableSetOf<Guard>()
   val scanY = (0..<width).map { x ->
     input.mapIndexed { iy, y -> if (y[x] == '#') iy else null }
         .filterNotNull()
   }
 
-
   val scanX = input.map { y ->
     y.mapIndexed { ix, x -> if (x == '#') ix else null }
         .filterNotNull()
   }
-
 
   suspend fun doStep(
     inputState: List<List<MutableState<Char>>>,
@@ -65,26 +63,34 @@ val day06 = day(6) {
     scanx: List<List<Int>>,
     scany: List<List<Int>>
   ): Boolean {
-    delay(1)
+//    delay(1000)
 
-
-
-
-    val nextMove = guard.nextMove()
-    if (inputState[nextMove.y][nextMove.x].value.let { it == '#' || it == 'O' }) {
-      guard.direction = direction[(direction.indexOf(guard.direction) + 1) % 4]
+    if (guard.direction == '^') {
+      val nextY = scany[guard.x].last { it < guard.y } + 1
+      result.value += guard.y - nextY
+      guard.y = nextY
     }
+    if (guard.direction == 'v') {
+      val nextY = scany[guard.x].first { it > guard.y } - 1
+      result.value += nextY - guard.y
+      guard.y = nextY
+    }
+    if (guard.direction == '<') {
+      val nextX = scanx[guard.y].last { it < guard.x } + 1
+      result.value += guard.x - nextX
+      guard.x = nextX
+    }
+    if (guard.direction == '>') {
+      val nextX = scanx[guard.y].first { it > guard.x } - 1
+      result.value += nextX - guard.x
+      guard.x = nextX
+    }
+    guard.direction = direction[(direction.indexOf(guard.direction) + 1) % 4]
 
-    val (x, y) = guard.nextMove()
-    guard.x = x
-    guard.y = y
-    if (inputState[guard.y][guard.x].value == guard.direction) {
+    if (visited.contains(guard)) {
       return true //in loop
     }
-    if (inputState[guard.y][guard.x].value == '.') {
-      result.value++
-    }
-
+    visited.add(guard)
     inputState[guard.y][guard.x].value = guard.direction
     return false
   }
@@ -109,7 +115,7 @@ val day06 = day(6) {
   part2(6, 0) {
     val result = mutableIntStateOf(1)
 
-    val inputState = input.map { row -> row.map { col -> mutableStateOf(col) } }
+    var inputState = input.map { row -> row.map { col -> mutableStateOf(col) } }
     var inLoop = mutableIntStateOf(0)
     render {
       doRender(inLoop, inputState)
@@ -119,13 +125,16 @@ val day06 = day(6) {
       println(scanX)
 
       inputState.forEachIndexed { iy, y ->
+        println(iy)
+        if (iy == guardY) {
+          println("breakpoint")
+        }
         y.forEachIndexed { ix, x ->
-          inputState.flatten().forEachIndexed { i, c -> c.value = input.flatMap { it.toList() }[i] }
-
           if (x.value == '.') {
+            inputState = input.map { row -> row.map { col -> mutableStateOf(col) } }
             x.value = 'O'
-            println("Obstacle in ($ix, $iy)")
-//          inputState[6][3].value = 'O'
+            //            println("Obstacle in ($ix, $iy)")
+            //          inputState[6][3].value = 'O'
             guard.x = guardX
             guard.y = guardY
             guard.direction = direction[0]
@@ -137,17 +146,18 @@ val day06 = day(6) {
             val scanyO = scanY.mapIndexed { ixs, it ->
               if (ix == ixs) (it + iy).sorted() else it
             }
-
+            visited.clear()
 
             try {
               while (true) {
                 if (doStep(inputState, result, scanxO, scanyO)) break
               }
-              println("In loop")
+              //              println("In loop")
               inLoop.value++
-            } catch (e: IndexOutOfBoundsException) {
-              println("Out of area, exiting...")
+            } catch (e: NoSuchElementException) {
+              //                println("Out of area, exiting...")
             }
+
           }
 
         }
