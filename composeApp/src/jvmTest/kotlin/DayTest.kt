@@ -3,11 +3,12 @@ import io.kotest.core.spec.style.funSpec
 import org.jventrib.aoc.Day
 import org.jventrib.aoc.days.day05
 import org.jventrib.aoc.days.day06
+import org.jventrib.aoc.days.day07
 
 class DayTest :
   FunSpec(
       {
-        coroutineTestScope = true
+//        coroutineTestScope = true
         fun <E> dayPartTest(day: Day<E>) = funSpec {
           context("Part 1") {
             test("day part 1 example") { executeAndAssert(day, 1, true) }
@@ -18,6 +19,6 @@ class DayTest :
             test("day part 2") { executeAndAssert(day, 2, false) }
           }
         }
-        include(dayPartTest(day06))
+        include(dayPartTest(day07))
       },
   )
