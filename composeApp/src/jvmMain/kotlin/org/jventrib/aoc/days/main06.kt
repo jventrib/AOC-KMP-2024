@@ -9,14 +9,14 @@ import org.jventrib.aoc.renderDayPart
 fun main() = application {
   val state =
       rememberWindowState(
-          width = 400.dp,
-          height = 300.dp,
+          width = 1800.dp,
+          height = 1600.dp,
       )
   Window(
       onCloseRequest = ::exitApplication,
       title = "AOC-KMP-compose",
       state = state,
   ) {
-    renderDayPart(day06, 1, true, "example")
+    renderDayPart(day06, 2, false, "example")
   }
 }
