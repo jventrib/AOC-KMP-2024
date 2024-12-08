@@ -10,13 +10,13 @@ fun main() = application {
   val state =
       rememberWindowState(
           width = 1200.dp,
-          height = 900.dp,
+          height = 1000.dp,
       )
   Window(
       onCloseRequest = ::exitApplication,
       title = "AOC-KMP-compose",
       state = state,
   ) {
-    renderDayPart(day08, 1, false, "example")
+    renderDayPart(day08, 2, false, "example")
   }
 }
