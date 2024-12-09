@@ -104,9 +104,7 @@ val day08 =
                 if (antinode.x !in (0..<width) || antinode.y !in (0..<height)) {
                   break
                 }
-
-
-                delay(10)
+                delay(1)
                 val point = inputState.getOrNull(antinode.y)?.getOrNull(antinode.x)
                 if (point != null && point.value != '#') {
                   point.value = '#'
