@@ -4,23 +4,23 @@ import org.jventrib.aoc.day
 
 val day09 =
     day(9) {
+        var blockId = 0
+        val diskMap = input.first().mapIndexed { i, c ->
+            if (i % 2 == 0) {
+                Digit(c.digitToInt(), DigitType.FILE_LENGTH, blockId++)
+            } else {
+                Digit(c.digitToInt(), DigitType.FREE_SPACE)
+            }
+        }.toMutableList()
 
-        part1(1928, 0) {
+        part1(1928, 6200294120911L) {
             render {
             }
             exec {
-                var blockId = 0
-                val diskMap = input.first().mapIndexed { i, c ->
-                    if (i % 2 == 0) {
-                        Digit(c.digitToInt(), DigitType.FILE_LENGTH, blockId++)
-                    } else {
-                        Digit(c.digitToInt(), DigitType.FREE_SPACE)
-                    }
-                }.toMutableList()
 //                println(diskMap.diskMapToString())
                 while (true) {
-
-                    var fsIndex = diskMap.indexOfFirst { it.type == DigitType.FREE_SPACE && it.length > 0 }
+                    var fsIndex =
+                        diskMap.indexOfFirst { it.type == DigitType.FREE_SPACE && it.length > 0 }
                     val firstFreeSpace = diskMap[fsIndex]
                     val availables = firstFreeSpace.length
 
@@ -36,7 +36,8 @@ val day09 =
                         if (prevFl.blockId == last.blockId) {
                             prevFl.length++
                         } else {
-                            fsIndex = diskMap.indexOfFirst { it.type == DigitType.FREE_SPACE && it.length > 0 }
+                            fsIndex =
+                                diskMap.indexOfFirst { it.type == DigitType.FREE_SPACE && it.length > 0 }
                             diskMap.add(fsIndex++, Digit(1, DigitType.FILE_LENGTH, last.blockId))
                         }
 
@@ -47,37 +48,57 @@ val day09 =
                     }
                     if (diskMap.none { it.type == DigitType.FREE_SPACE && it.length > 0 }) break
                 }
-//                val diskMapToString = diskMap.diskMapToString()
-//                println(diskMapToString)
-//                val sum = diskMapToString.mapIndexed { i, c ->
-//                    c.digitToInt().toLong() * i
-//                }.sum()
-//                sum
-
-
-                var resultIdx = 0L
-                diskMap.filter { it.blockId != null }
-                    .fold(0L) { acc, digit ->
-                        var st = 0L
-                        repeat(digit.length) {
-                            st += digit.blockId!! * resultIdx++
-                        }
-                        acc + st
-                    }
+                diskMap.checksum()
             }
         }
-        part2(0, 0) {
+        part2(2858, 0) {
             render { }
             exec {
-                0
+                println(diskMap.diskMapToString())
+                var done = false
+                while (!done) {
+                    diskMap.withIndex<Digit>()
+                        .filter<IndexedValue<Digit>> { (i, it) -> it.type == DigitType.FILE_LENGTH }
+                        .sortedByDescending<IndexedValue<Digit>, Int> { (i, it) -> it.blockId }
+                        .forEach { indexedFile ->
+                            val fs = diskMap
+                                .withIndex()
+                                .firstOrNull() { it -> it.value.type == DigitType.FREE_SPACE && it.value.length >= indexedFile.value.length && it.index < indexedFile.index }
+                            if (fs != null) {
+                                diskMap.add(fs.index, indexedFile.value.copy())
+                                fs.value.length -= indexedFile.value.length
+                                if (fs.value.length <= 0) {
+                                    diskMap.removeAt(fs.index + 1)
+                                }
+                                indexedFile.value.type = DigitType.FREE_SPACE
+                                indexedFile.value.blockId = null
+
+                            } else done = true
+
+                            println(diskMap.diskMapToString())
+                        }
+                }
+                diskMap.checksum()
             }
         }
     }
 
+private fun MutableList<Digit>.checksum(): Long {
+    var resultIdx = 0L
+    return filter { it.blockId != null }
+        .fold(0L) { acc, digit ->
+            var st = 0L
+            repeat(digit.length) {
+                st += digit.blockId!! * resultIdx++
+            }
+            acc + st
+        }
+}
+
 private data class Digit(
     var length: Int,
-    val type: DigitType,
-    val blockId: Int? = null,
+    var type: DigitType,
+    var blockId: Int? = null,
 )
 
 enum class DigitType {
