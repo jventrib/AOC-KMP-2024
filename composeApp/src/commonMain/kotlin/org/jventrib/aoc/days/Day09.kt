@@ -75,7 +75,7 @@ val day09 =
 
                             } else done = true
 
-                            println(diskMap.diskMapToString())
+//                            println(diskMap.diskMapToString())
                         }
                 }
                 diskMap.checksum()
@@ -85,11 +85,10 @@ val day09 =
 
 private fun MutableList<Digit>.checksum(): Long {
     var resultIdx = 0L
-    return filter { it.blockId != null }
-        .fold(0L) { acc, digit ->
+    return fold(0L) { acc, digit ->
             var st = 0L
             repeat(digit.length) {
-                st += digit.blockId!! * resultIdx++
+                st += (digit.blockId ?: 0) * resultIdx++
             }
             acc + st
         }
