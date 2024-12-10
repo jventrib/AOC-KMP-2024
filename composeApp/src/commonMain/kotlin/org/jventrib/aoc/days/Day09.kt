@@ -63,7 +63,8 @@ val day09 =
                         .forEach { indexedFile ->
                             val fs = diskMap
                                 .withIndex()
-                                .firstOrNull() { it -> it.value.type == DigitType.FREE_SPACE && it.value.length >= indexedFile.value.length && it.index < indexedFile.index }
+                                .firstOrNull { it -> it.value.type == DigitType.FREE_SPACE
+                                        && it.value.length >= indexedFile.value.length && it.index < indexedFile.index }
                             if (fs != null) {
                                 diskMap.add(fs.index, indexedFile.value.copy())
                                 fs.value.length -= indexedFile.value.length
@@ -72,7 +73,6 @@ val day09 =
                                 }
                                 indexedFile.value.type = DigitType.FREE_SPACE
                                 indexedFile.value.blockId = null
-
                             } else done = true
 
 //                            println(diskMap.diskMapToString())
