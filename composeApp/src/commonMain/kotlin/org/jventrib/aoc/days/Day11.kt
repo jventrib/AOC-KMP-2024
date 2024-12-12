@@ -4,63 +4,36 @@ import org.jventrib.aoc.day
 
 val day11 =
     day(11) {
-      val cache: MutableMap<String, String> = mutableMapOf()
+      val cache: MutableMap<Pair<String, Int>, Long> = mutableMapOf()
 
       var line = input[0]
-      fun doStone(line: String): String {
-        val stones = line.split(' ')
-        return stones.map { stone ->
+      fun doStone(stone: String, step: Int): Long {
+        if (step == 0) return 1
+
+        return cache.getOrPut(Pair(stone, step)) {
           when {
-            stone == "0" -> "1"
-            stone.length % 2 == 0 -> stone.substring(0, stone.length / 2)
-                .run { toLong().toString() } + " " + stone.substring(stone.length / 2)
-                .run { toLong().toString() }
+            stone == "0" -> doStone("1", step - 1)
+            stone.length % 2 == 0 ->
+              (doStone(stone.substring(0, stone.length / 2).toLong().toString(), step - 1) +
+                  doStone(stone.substring(stone.length / 2).toLong().toString(), step - 1))
 
-            else -> (stone.toLong() * 2024L).toString()
+            else -> doStone((stone.toLong() * 2024L).toString(), step - 1)
           }
-        }.joinToString(" ")
-      }
-
-      fun repeatStone(l: String): String {
-        return cache.getOrPut(l) {
-          var stone = l
-          repeat(25) {
-            stone = doStone(stone)
-          }
-          stone
         }
       }
-
 
       part1(55312, 224529) {
-        render {
-        }
+        render {}
         exec {
-          repeatStone(line).split(" ").count()
+          val sumOf = line.split(" ").sumOf { doStone(it, 25) }
+          sumOf
         }
       }
-      part2(0, 0) {
-        render { }
+      part2(65601038650482L, 266820198587914L) {
+        render {}
         exec {
-
-          //precompute the first 5000
-          println("Init Cache")
-
-          (0..5000).map {
-            if (it % 100 == 0) println("Cache progress $it")
-            it.toString() to repeatStone(it.toString())
-          }.toMap(cache)
-
-          println("Cache initialized")
-
-          var count = 0
-
-          repeatStone(line).split(" ").map {
-            repeatStone(it).split(" ").map {
-              println("count ${count++}")
-              repeatStone(it).split(" ").count()
-            }.sum()
-          }.sum()
+          val sumOf = line.split(" ").sumOf { doStone(it, 75) }
+          sumOf
         }
       }
     }
