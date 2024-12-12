@@ -111,7 +111,7 @@ class PartBlock<E>() {
   }
 }
 
-data class Point(var x: Int, var y: Int, var value: Int = 0) {
+data class Point<E, F>(var x: Int, var y: Int, var value: E, var state: F) {
 
   fun moveX(amount: Int) {
     x += amount
@@ -121,7 +121,7 @@ data class Point(var x: Int, var y: Int, var value: Int = 0) {
     y += amount
   }
 
-  fun neighborsIn(points: List<List<Point>>) =
+  fun neighborsIn(points: List<List<Point<E, F>>>) =
       listOfNotNull(
           points[y].getOrNull(x - 1),
           points[y].getOrNull(x + 1),
