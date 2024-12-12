@@ -22,6 +22,9 @@ val day12 =
         area += point
         val neighbors = point.neighborsIn(inputState)
             .filter { it.value == point.value }
+
+        point.state = 4 - neighbors.size
+
         neighbors.forEach {
           if (!area.contains(it)) {
             findArea(it, area)
@@ -38,11 +41,12 @@ val day12 =
             if (acc.flatMap { it.plants }.none { it == p }) {
               acc + Region(p.value, mutableListOf<Point12>().let { findArea(p, it); it })
             } else acc
-          }.map { it.name to it.plants.size }
-          0
+          }
+          regions.map { it.getArea() * it.getPerimeter() }.sum()
+
         }
       }
-      part2(0, 0) {
+      part2(1206, 0) {
         render { }
         exec {
           0
@@ -50,4 +54,8 @@ val day12 =
       }
     }
 
-data class Region(val name: Char, val plants: List<Point12>)
+data class Region(val name: Char, val plants: List<Point12>) {
+  fun getArea() = plants.size
+
+  fun getPerimeter() = plants.sumOf { it.state }
+}
