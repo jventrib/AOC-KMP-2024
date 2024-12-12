@@ -2,6 +2,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec
 import org.jventrib.aoc.Day
 import org.jventrib.aoc.days.day11
+import org.jventrib.aoc.days.day12
 
 class DayTest :
   FunSpec(
@@ -17,6 +18,6 @@ class DayTest :
             test("day part 2") { executeAndAssert(day, 2, false) }
           }
         }
-        include(dayPartTest(day11))
+        include(dayPartTest(day12))
       },
   )
