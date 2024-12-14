@@ -49,9 +49,9 @@ class Day<E>(val dayNumber: Int, val block: Day<E>.() -> Unit) {
   var scope: CoroutineScope? = null
 
   fun part1(
-      expectedExampleOutput: E,
-      expectedOutput: E? = null,
-      block: PartBlock<E>.() -> Unit
+    expectedExampleOutput: E,
+    expectedOutput: E? = null,
+    block: PartBlock<E>.() -> Unit
   ): Part<E> {
     part1 = Part(scope, expectedOutput, block)
     part1Example = Part(scope, expectedExampleOutput, block)
@@ -59,9 +59,9 @@ class Day<E>(val dayNumber: Int, val block: Day<E>.() -> Unit) {
   }
 
   fun part2(
-      expectedExampleOutput: E,
-      expectedOutput: E? = null,
-      block: PartBlock<E>.() -> Unit
+    expectedExampleOutput: E,
+    expectedOutput: E? = null,
+    block: PartBlock<E>.() -> Unit
   ): Part<E> {
     part2 = Part(scope, expectedOutput, block)
     part2Example = Part(scope, expectedExampleOutput, block)
@@ -79,9 +79,9 @@ class Day<E>(val dayNumber: Int, val block: Day<E>.() -> Unit) {
 }
 
 class Part<E>(
-    var scope: CoroutineScope?,
-    val expected: E?,
-    private val block: PartBlock<E>.() -> Unit,
+  var scope: CoroutineScope?,
+  val expected: E?,
+  private val block: PartBlock<E>.() -> Unit,
 ) {
   private val partBlock = PartBlock<E>()
 
@@ -128,12 +128,24 @@ data class Point<E, F>(var x: Int, var y: Int, var value: E, var state: F) {
           points.getOrNull(y - 1)?.get(x),
           points.getOrNull(y + 1)?.get(x),
       )
+
+  fun neighbors8In(points: List<List<Point<E, F>>>) =
+      listOfNotNull(
+          points[y].getOrNull(x - 1),
+          points[y].getOrNull(x + 1),
+          points.getOrNull(y - 1)?.get(x),
+          points.getOrNull(y + 1)?.get(x),
+          points.getOrNull(y - 1)?.getOrNull(x - 1),
+          points.getOrNull(y + 1)?.getOrNull(x - 1),
+          points.getOrNull(y - 1)?.getOrNull(x + 1),
+          points.getOrNull(y + 1)?.getOrNull(x + 1),
+      )
 }
 
 fun <T, R> Flow<T>.concurrentMap(
-    dispatcher: CoroutineDispatcher,
-    concurrencyLevel: Int,
-    transform: suspend (T) -> R
+  dispatcher: CoroutineDispatcher,
+  concurrencyLevel: Int,
+  transform: suspend (T) -> R
 ): Flow<R> {
   return flatMapMerge(concurrencyLevel) { value -> flow { emit(transform(value)) } }
       .flowOn(dispatcher)
